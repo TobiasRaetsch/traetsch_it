@@ -1,0 +1,165 @@
+<div th:fragment="content">
+    <div  ng-show="overview.isDark()" class="dark"><div ng-show="overview.isLoading()" class="loading"><img src="images/load.gif" /></div></div>
+    <header>
+        <h1 class="text-center">Video Game Statistics</h1>
+        <h2 class="text-center">– an Angular Application –</h2>
+    </header>
+
+    <table class="overview headSelect">
+        <tr>
+            <td ng-click="overview.checkAll('VG')" class="event">All</td>
+            <td ng-click="overview.uncheckAll('VG')" class="event">None</td>
+            <td class="event">
+                <input value="Scan Selected" ng-click="overview.scanItem(searchItem)" class="btn btn-primary pull-left scan" type="submit" />
+            </td>
+            <td class="event">
+                <input value="Delete Selected" ng-click="overview.deleteSelectedVideoGames(searchItem)" class="btn btn-primary pull-left scan" type="submit" />
+            </td>
+            <td class="spacer"></td>
+        </tr>
+    </table>
+
+    <div class="overview">
+        <table class="overview">
+            <tr ng-repeat="videoGame in overview.videoGames">
+                <td class='overviewTableCheckBox'><input ng-checked="overview.isVideoGameChecked(videoGame)" id='{{videoGame.prefId}}' type="checkbox" ng-click="overview.addToOverviewList(videoGame)"/></td>
+                <td style="min-width: 70px;" ng-click="overview.showItem(videoGame.id)" id="{{videoGame.id}}" class="event">{{videoGame.name}}</td>
+                <td class="small-image pull-left thumbnail"><img src="/image/{{videoGame.id}}" /></td>
+                <td><em class="pull-right">{{videoGame.videoGame.price | currency}}</em></td>
+                <td class="event" style="width: 30px;"><img style="margin-left: 5px; width:30px;" ng-click="overview.deleteVideoGame(videoGame)" src="images/delete.gif" /></td>
+                <td class="event" style="width: 30px;"><img style="width:30px;" ng-click="overview.refreshVideoGame(videoGame)" src="images/refresh.gif" /></td>
+            </tr>
+        </table>
+    </div>
+    <form name='itemForm' ng-submit='overview.searchItem(overview.entity)'>
+        <table class='overview'>
+            <tr class='searchForm'>
+                <td>
+                    <input id='addGame' ng-model='overview.overview.request' class='form-control' placeholder='Game Title' title='Search Game' /></td>
+                <td> </td>
+                <td>
+                    <input type='submit' class='btn btn-primary pull-left' value='Search Game' />
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <div ng-show="overview.isShown()" id="openModal" class="modalbg">
+        <div ng-show="overview.isShown()" class="dialog">
+            <p ng-show="overview.isShown()" ng-click="overview.hideItem()" class="close">X</p>
+            <div class="item">
+                <div class="small-image pull-left thumbnail">
+                    <img src="/image/{{overview.entity.videoGameOverviewItem.videoGame.image.id}}" />
+                </div>
+                <div>
+                    <h3>{{overview.entity.videoGameOverviewItem.videoGame.name}}</h3>
+                </div>
+                <table class="itemTable">
+                    <tr>
+                        <td>
+                            <div class="line">
+                                <strong>Platforms:</strong>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="line" ng-repeat="platform in overview.entity.platforms">
+                                {{platform.platform.name}}{{$last ? '' : ', '}}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="line">
+                                <strong>Developer:</strong>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="line">
+                                {{overview.entity.videoGameOverviewItem.developer.name}}
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="line">
+                                <strong>Genre:</strong>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="line">
+                                {{overview.entity.videoGameOverviewItem.genre.name}}
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div ng-show='overview.showScanResult()' id='scanResult' class='modalbg'>
+        <div ng-show='overview.showScanResult()' class='dialog'>
+            <p ng-show='overview.showScanResult()' ng-click='overview.hideItem()' class='close'>X</p>
+            <div class='item'>
+                <div>
+                    <h3 class='search'>{{overview.searchItems[0].searchRequest}}</h3>
+                </div>
+                <table class='itemTable'>
+                    <tr>
+                        <td>
+                        </td>
+                        <td>
+                            <div class='line'>
+                                <strong>Title</strong>
+                            </div>
+                        </td>
+                        <td>
+                            <div class='line'>
+                                <strong>Platform</strong>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="width: 70px;">
+                            <p ng-click="overview.checkAll('RQ')" class="event" style="float: left; margin-right: 10px;">All</p>
+                            <p ng-click="overview.uncheckAll('RQ')" class="event" style="float: left;">None</p>
+                        </td>
+                        <td><input style="width:85px;" value="Scan Selected" ng-click="overview.scanItem(searchItem)" class="btn btn-primary pull-left scan" type="submit" />
+
+                        </td>
+                        <td>
+
+                        </td>
+                    </tr>
+
+                    <tr ng-repeat='searchItem in overview.searchItems' ng-show='!$last'>
+                        <td class='itemTableCheckBox'>
+                            <input id='{{searchItem.prefId}}' ng-checked="overview.isGameScanChecked(searchItem)" type="checkbox" ng-click="overview.addToSearchItemList(searchItem)"/>
+                        </td>
+                        <td>
+                            <label for='{{searchItem.prefId}}'>
+                                <div class='line'>
+                                    {{searchItem.name}}
+                                </div>
+                            </label>
+                        </td>
+                        <td>
+                            <div class='line'>
+                                {{searchItem.platform}}
+                            </div>
+                        </td>
+                        <td>
+                            <div class='line' ng-show='overview.showScan(searchItem.id)'>
+                                <input ng-click='overview.scanItem(searchItem)' class="btn btn-primary pull-left scan" value="Scan" type="submit" />
+                            </div>
+                            <div class='line' ng-show='overview.showLoad(searchItem.id)'>
+                                <img src='images/load.gif' style='width:18px; margin-left:17px;' />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

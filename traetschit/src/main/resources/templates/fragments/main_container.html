@@ -1,0 +1,14 @@
+<div id="main_container" th:fragment="main_container">
+    <div id="header">
+        <div class="logo" id="logo"><a href="/home"><img src="images/my_logo.gif" border="0" alt="" title="" /></a></div>
+    </div>
+    <div id="menu" class="menu">
+        <ul id="menu_items" th:each="naviEntry : ${navi}">
+            <li th:id="${naviEntry.id}" th:class="${naviEntry.cssClass}"><a th:href="${naviEntry.url}" th:text="${naviEntry.label}">Egal</a></li>
+        </ul>
+    </div>
+    <div th:replace="'content/' + ${pageName} :: content" id="center_content" class="center_content">
+
+    </div>
+</div>
+<!-- end of main_container -->

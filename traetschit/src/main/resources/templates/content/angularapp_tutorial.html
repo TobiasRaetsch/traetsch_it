@@ -1,0 +1,155 @@
+<div ng-controller="ItemController as item" th:fragment="content">
+    <div  ng-show="item.isShown()" class="dark"> </div>
+    <header>
+        <h1 class="text-center">Gem Store</h1>
+        <h2 class="text-center">– an Angular Application store –</h2>
+    </header>
+    <table class="overview" style="">
+        <tr ng-repeat="product in store.products">
+            <td id="{{product.id}}" class="event" ng-click="item.showItem(product.id)" style="">{{product.name}}</td>
+            <td class="small-image pull-left thumbnail"><img ng-src="{{product.images[0]}}" /></td>
+            <td><em class="pull-right">{{product.price | currency}}</em></td>
+        </tr>
+    </table>
+    <div ng-show="item.isShown()" id="openModal" class="modalbg">
+        <div ng-show="item.isShown()" class="dialog">
+            <p ng-show="item.isShown()" ng-click="item.hideItem()" class="close">X</p>
+            <div class="list-group">
+                <div class="list-group-item">
+                    <h3>{{item.entity.name}} <em class="pull-right">{{item.entity.price | currency}}</em></h3>
+                    <div ng-controller="GalleryController as gallery"  ng-show="item.entity.images.length">
+                        <div class="img-wrap">
+                            <img ng-src="{{item.entity.images[gallery.current]}}" />
+                        </div>
+                        <ul class="img-thumbnails clearfix">
+                            <li class="small-image pull-left thumbnail" ng-repeat="image in item.entity.images">
+                                <img ng-src="{{image}}" />
+                            </li>
+                        </ul>
+                    </div>
+                    <section ng-controller="TabController as tab">
+                        <ul class="nav nav-pills">
+                            <li ng-class="{ active:tab.isSet(1) }">
+                                <a href="" ng-click="tab.setTab(1)">Description</a>
+                            </li>
+                            <li ng-class="{ active:tab.isSet(2) }">
+                                <a href="" ng-click="tab.setTab(2)">Specs</a>
+                            </li>
+                            <li ng-class="{ active:tab.isSet(3) }">
+                                <a href="" ng-click="tab.setTab(3);tab.loadReviews(item.entity.id)">Reviews</a>
+                            </li>
+                        </ul>
+                        <div ng-show="tab.isSet(1)">
+                            <h4>Description</h4>
+                            <blockquote>{{item.entity.description}}</blockquote>
+                        </div>
+                        <div ng-show="tab.isSet(2)">
+                            <h4>Specs</h4>
+                            <blockquote>Shine: {{item.entity.shine}}</blockquote>
+                        </div>
+
+
+                        <div ng-show="tab.isSet(3)">
+
+                            <ul>
+                                <h4>Reviews</h4>
+                                <li ng-repeat="review in tab.reviews">
+                                    <blockquote>
+                                        <strong>{{review.stars}} Stars</strong>
+                                        {{review.body}}
+                                        <cite class="clearfix">{{review.author}}</cite>
+                                    </blockquote>
+                                </li>
+                            </ul>
+
+                            <!--  Review Form -->
+                            <form name="reviewForm" ng-controller="ReviewController as reviewCtrl"
+                                  ng-submit="reviewCtrl.addReview(item.entity, tab)">
+
+                                <!--  Live Preview -->
+                                <blockquote>
+                                    <strong>{{reviewCtrl.review.stars}} Stars</strong>
+                                    {{reviewCtrl.review.body}}
+                                    <cite class="clearfix">—{{reviewCtrl.review.author}}</cite>
+                                </blockquote>
+
+                                <!--  Review Form -->
+                                <h4>Submit a Review</h4>
+                                <fieldset class="form-group">
+                                    <select ng-model="reviewCtrl.review.stars" class="form-control" ng-options="stars for stars in [5,4,3,2,1]" title="Stars">
+                                        <option value="">Rate the Product</option>
+                                    </select>
+                                </fieldset>
+                                <fieldset class="form-group">
+                                    <textarea ng-model="reviewCtrl.review.body" class="form-control" placeholder="Write a short review of the product..." title="Review"></textarea>
+                                </fieldset>
+                                <fieldset class="form-group">
+                                    <input ng-model="reviewCtrl.review.author" type="email" class="form-control" placeholder="jimmyDean@example.org" title="Email" />
+                                </fieldset>
+                                <fieldset class="form-group">
+                                    <input type="submit" class="btn btn-primary pull-right" value="Submit Review" />
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--
+    <div class="list-group">
+        <div class="list-group-item" ng-repeat="product in store.products">
+
+            <h3>{{product.name}} <em class="pull-right">{{product.price | currency}}</em></h3>
+            <div ng-controller="GalleryController as gallery"  ng-show="product.images.length">
+                <div class="img-wrap">
+                    <img ng-src="{{product.images[gallery.current]}}" />
+                </div>
+                <ul class="img-thumbnails clearfix">
+                    <li class="small-image pull-left thumbnail" ng-repeat="image in product.images">
+                        <img ng-src="{{image}}" />
+                    </li>
+                </ul>
+            </div>
+            <section ng-controller="TabController as tab">
+                <ul class="nav nav-pills">
+                    <li ng-class="{ active:tab.isSet(1) }">
+                        <a href="" ng-click="tab.setTab(1)">Description</a>
+                    </li>
+                    <li ng-class="{ active:tab.isSet(2) }">
+                        <a href="" ng-click="tab.setTab(2)">Specs</a>
+                    </li>
+                    <li ng-class="{ active:tab.isSet(3) }">
+                        <a href="" ng-click="tab.setTab(3)">Reviews</a>
+                    </li>
+                </ul>
+                <div ng-show="tab.isSet(1)">
+                    <h4>Description</h4>
+                    <blockquote>{{product.description}}</blockquote>
+                </div>
+                <div ng-show="tab.isSet(2)">
+                    <h4>Specs</h4>
+                    <blockquote>Shine: {{product.shine}}</blockquote>
+                </div>
+
+
+                <div ng-show="tab.isSet(3)">
+
+                    <ul>
+                        <h4>Reviews</h4>
+                        <li>
+                            <blockquote>
+                                <strong> Stars</strong>
+
+                                <cite class="clearfix">—</cite>
+                            </blockquote>
+                        </li>
+                    </ul>
+                </div>
+
+            </section>
+        </div>
+    </div>
+    -->
+</div>
